@@ -1,12 +1,16 @@
 
 import compose from 'koa-compose';
-import { getNullableType } from 'graphql';
 
 const wrapMiddleware = function wrapMiddleware (fn) {
   return function (context = {}, next) {
     const args = (context.args || []).concat(next);
     return fn.apply(this, args);
   }
+}
+
+// GraphQLNonNullable appends '!' when casted to a String
+const getNullableType = function getNullableType (type) {
+  return type.toString().substr(-1) === '!' ? type.ofType : type;
 }
 
 const getType = function getType (type) {
